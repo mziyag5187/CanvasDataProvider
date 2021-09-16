@@ -6,19 +6,19 @@ import com.cybertekschool.utilities.ConfigurationReader;
 import com.cybertekschool.utilities.Driver;
 import org.junit.Test;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.junit.rules.ExpectedException;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class CanvasDataProvider {
-
-	WebElement insightTab;
 
 
 	@Test
@@ -36,8 +36,8 @@ public class CanvasDataProvider {
 		Sheet studentList = workbook.getSheet(ConfigurationReader.get("groups"));
 		int studentsLastRow = studentList.getLastRowNum();
 
-		ArrayList<Cell> LessonsArray = new ArrayList<>();
-		ArrayList<Cell> StudentsArray = new ArrayList<>();
+		ArrayList<String> LessonsArray = new ArrayList<>();
+		ArrayList<String> StudentsArray = new ArrayList<>();
 
 		//========================================================================
 
@@ -45,13 +45,13 @@ public class CanvasDataProvider {
 		System.out.println(mesaj);
 
 		for (int i = 1; i <= lessonsLastRow; i++) {
-			LessonsArray.add(lessonList.getRow(i).getCell(0));
-			System.out.println(LessonsArray.get(i - 1).getStringCellValue());
+			LessonsArray.add(lessonList.getRow(i).getCell(0).getStringCellValue());
+			System.out.println(LessonsArray.get(i - 1));
 		}
 
 		for (int i = 1; i <= studentsLastRow; i++) {
-			StudentsArray.add(studentList.getRow(i).getCell(0));
-			System.out.println(StudentsArray.get(i - 1).getStringCellValue());
+			StudentsArray.add(studentList.getRow(i).getCell(0).getStringCellValue());
+			System.out.println(StudentsArray.get(i - 1));
 		}
 
 		//========================================================================
@@ -73,13 +73,19 @@ public class CanvasDataProvider {
 
 		BrowserUtils.clickWithWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
 
-		Thread.sleep(15000);
+		WebDriverWait wait = new WebDriverWait(driver,25);
+		wait.until(ExpectedConditions.urlContains("UserHome"));
+
+//		Thread.sleep(15000);
 
 		//************************************************
 		//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
 		//************************************************
 
 		ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
+		wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+		wait.until(ExpectedConditions.urlContains("login_success=1"));
+
 		driver.switchTo().window(tabs2.get(1));
 		driver.close();
 		driver.switchTo().window(tabs2.get(0));
@@ -87,13 +93,13 @@ public class CanvasDataProvider {
 
 		//========================================================================
 
-		for (Cell lesson : LessonsArray) {
+		for (String lesson : LessonsArray) {
 
-			driver.get(lesson.getStringCellValue());
+			driver.get(lesson);
 			driver.switchTo().defaultContent();
 			driver.switchTo().frame(1);
 
-			for (Cell student : StudentsArray) {
+			for (String student : StudentsArray) {
 
 				for (int i = 1; i < 2; i++) {
 					try {
@@ -110,14 +116,13 @@ public class CanvasDataProvider {
 
 				try1:
 				try {
-					BrowserUtils.clickWithTimeOut(By.xpath("//*[.=\"" + student.getStringCellValue() + "\"]"), 3x"");
-					System.out.println(driver.findElement(By.xpath("//*[.=\"" + student.getStringCellValue() + "\"]")).getText());
+					BrowserUtils.clickWithTimeOut(By.xpath("//*[.=\"" + student + "\"]"), 3);
+					System.out.println(driver.findElement(By.xpath("//*[.=\"" + student + "\"]")).getText());
 					break try1;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
-//				BrowserUtils.waitFor(1);
 
 				BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
 
