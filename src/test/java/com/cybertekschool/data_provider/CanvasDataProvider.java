@@ -11,9 +11,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,11 +51,12 @@ public class CanvasDataProvider {
 
 		for (int i = 1; i <= studentsLastRow; i++) {
 			StudentsArray.add(studentList.getRow(i).getCell(0));
+			System.out.println(StudentsArray.get(i - 1).getStringCellValue());
 		}
 
 		//========================================================================
 
-		String mail = ConfigurationReader.get("username");
+		String username = ConfigurationReader.get("username");
 		String password = ConfigurationReader.get("password");
 
 		//========================================================================
@@ -69,7 +67,7 @@ public class CanvasDataProvider {
 
 		//========================================================================
 
-		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(mail);
+		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
 
@@ -90,51 +88,55 @@ public class CanvasDataProvider {
 		//========================================================================
 
 		for (Cell lesson : LessonsArray) {
+
 			driver.get(lesson.getStringCellValue());
 			driver.switchTo().defaultContent();
 			driver.switchTo().frame(1);
 
-			BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 10);
-
 			for (Cell student : StudentsArray) {
 
-				for (int i = 1; i < 5; i++) {
+				for (int i = 1; i < 2; i++) {
 					try {
 						driver.switchTo().frame(1);
 						break;
 					} catch (Exception e) {
+						Thread.sleep(1000);
 						e.printStackTrace();
 					}
 
+				}
 
-//					BrowserUtils.waitFor(1);
+				BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
-					BrowserUtils.clickWithTimeOut(By.xpath("//*[.=\"" + student.getStringCellValue() + "\"]"), 10);
-
+				try1:
+				try {
+					BrowserUtils.clickWithTimeOut(By.xpath("//*[.=\"" + student.getStringCellValue() + "\"]"), 3x"");
 					System.out.println(driver.findElement(By.xpath("//*[.=\"" + student.getStringCellValue() + "\"]")).getText());
+					break try1;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-					BrowserUtils.waitFor(1);
+//				BrowserUtils.waitFor(1);
 
-					BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
+				BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
 
-					for (int j = 1; j < 5; j++) {
-						try {
-							driver.switchTo().defaultContent();
-							break;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
+				for (int j = 1; j < 5; j++) {
+					try {
+						driver.switchTo().defaultContent();
+						break;
+					} catch (Exception e) {
+						Thread.sleep(1000);
+						e.printStackTrace();
 					}
-
-					BrowserUtils.scrollToElement(driver.findElement(By.id("breadcrumbs")));
-					BrowserUtils.waitFor(2);
-
 
 				}
 
+				BrowserUtils.scrollToElement(driver.findElement(By.id("breadcrumbs")));
+				BrowserUtils.waitFor(3);
 
 			}
+
 
 		}
 	}
