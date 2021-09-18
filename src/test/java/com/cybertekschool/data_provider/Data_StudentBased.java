@@ -4,12 +4,12 @@ package com.cybertekschool.data_provider;
 import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
 import com.cybertekschool.utilities.Driver;
-import org.junit.Test;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.rules.ExpectedException;
+import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,8 +17,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
-public class CanvasDataProvider {
+public class Data_StudentBased {
 
 
 	@Test
@@ -41,65 +42,72 @@ public class CanvasDataProvider {
 
 		//========================================================================
 
-		String mesaj = lessonList.getRow(0).getCell(0).getStringCellValue();
-		System.out.println(mesaj);
 
-		for (int i = 1; i <= lessonsLastRow; i++) {
+		for (int i = 0; i < lessonsLastRow; i++) {
 			LessonsArray.add(lessonList.getRow(i).getCell(0).getStringCellValue());
-			System.out.println(LessonsArray.get(i - 1));
+			System.out.println(LessonsArray.get(i));
 		}
 
-		for (int i = 1; i <= studentsLastRow; i++) {
+		for (int i = 0; i < studentsLastRow; i++) {
 			StudentsArray.add(studentList.getRow(i).getCell(0).getStringCellValue());
-			System.out.println(StudentsArray.get(i - 1));
+			System.out.println(StudentsArray.get(i));
 		}
 
-		//========================================================================
+		//==================================================================================
 
 		String username = ConfigurationReader.get("username");
 		String password = ConfigurationReader.get("password");
 
-		//========================================================================
+		//==================================================================================
 
 		WebDriver driver = Driver.get();
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS) ;
 		driver.manage().window().maximize();
 		driver.get(ConfigurationReader.get("url"));
 
-		//========================================================================
+		//==================================================================================
 
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
-
 		BrowserUtils.clickWithWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
 
 		WebDriverWait wait = new WebDriverWait(driver,25);
 		wait.until(ExpectedConditions.urlContains("UserHome"));
 
-//		Thread.sleep(15000);
-
-		//************************************************
+		//==================================================================================
 		//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
-		//************************************************
 
-		ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
 		wait.until(ExpectedConditions.numberOfWindowsToBe(2));
-		wait.until(ExpectedConditions.urlContains("login_success=1"));
 
+		ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
 		driver.switchTo().window(tabs2.get(1));
 		driver.close();
 		driver.switchTo().window(tabs2.get(0));
 		driver.get("https://learn.cybertekschool.com/courses/540");
 
-		//========================================================================
+		//==================================================================================
 
-		for (String lesson : LessonsArray) {
+		int studentCount = 0;
 
-			driver.get(lesson);
-			driver.switchTo().defaultContent();
-			driver.switchTo().frame(1);
+		for (String student : StudentsArray) {
+			++studentCount;
+			System.out.println( student );
+			int lessonCount = 0;
 
-			for (String student : StudentsArray) {
+			String studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\" + studentCount + " - " + student;
+			File studentFolderFile = new File(studentFolderString);
+
+			if (studentFolderFile.exists()) {
+				FileUtils.deleteDirectory(studentFolderFile);
+			}
+
+			for (String lesson : LessonsArray) {
+
+
+				driver.get(lesson);
+				driver.switchTo().defaultContent();
+				driver.switchTo().frame(1);
 
 				for (int i = 1; i < 2; i++) {
 					try {
@@ -109,16 +117,15 @@ public class CanvasDataProvider {
 						Thread.sleep(1000);
 						e.printStackTrace();
 					}
-
 				}
 
 				BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
-				try1:
+				try2:
 				try {
 					BrowserUtils.clickWithTimeOut(By.xpath("//*[.=\"" + student + "\"]"), 3);
 					System.out.println(driver.findElement(By.xpath("//*[.=\"" + student + "\"]")).getText());
-					break try1;
+					break try2;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -138,7 +145,29 @@ public class CanvasDataProvider {
 				}
 
 				BrowserUtils.scrollToElement(driver.findElement(By.id("breadcrumbs")));
-				BrowserUtils.waitFor(3);
+
+
+				String recordingName = driver.findElement(By.cssSelector("h1.page-title")).getText();
+				recordingName = recordingName.replace(":", "");
+				recordingName = recordingName.replace("|", "");
+				recordingName = recordingName.replace("~", "");
+				recordingName = recordingName.replace("!", "");
+				recordingName = recordingName.replace("%", "");
+				recordingName = recordingName.replace("RECORDING", "");
+				BrowserUtils.waitFor(2);
+
+				//-------------------------------------------------------
+
+
+				TakesScreenshot ts = (TakesScreenshot) driver;
+				File screenshot_png = ts.getScreenshotAs(OutputType.FILE);
+
+				File studentPNG = new File(studentFolderString + "\\"  + student +  " " + ++lessonCount + " - " + recordingName + ".png");
+
+				FileUtils.copyFile(screenshot_png, studentPNG);
+				Thread.sleep(500);
+
+
 
 			}
 
