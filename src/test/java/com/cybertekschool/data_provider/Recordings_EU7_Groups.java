@@ -5,21 +5,24 @@ import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
 import com.cybertekschool.utilities.Driver;
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Data_StudentBased {
+public class Recordings_EU7_Groups {
 
 
 	@Test
@@ -28,30 +31,12 @@ public class Data_StudentBased {
 		//====================================================================================================
 
 		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
-
 		Workbook workbook = WorkbookFactory.create(new File(path));
-
-		Sheet lessonList = workbook.getSheet(ConfigurationReader.get("dersler"));
-		int lessonsLastRow = lessonList.getLastRowNum();
-
-		Sheet studentList = workbook.getSheet(ConfigurationReader.get("groups"));
-		int studentsLastRow = studentList.getLastRowNum();
-
-		ArrayList<String> LessonsArray = new ArrayList<>();
-		ArrayList<String> StudentsArray = new ArrayList<>();
 
 		//========================================================================
 
-
-		for (int i = 0; i <= lessonsLastRow; i++) {
-			LessonsArray.add(lessonList.getRow(i).getCell(0).getStringCellValue());
-			System.out.println(LessonsArray.get(i));
-		}
-
-		for (int i = 0; i <= studentsLastRow; i++) {
-			StudentsArray.add(studentList.getRow(i).getCell(0).getStringCellValue());
-			System.out.println(StudentsArray.get(i));
-		}
+		Sheet sheet = workbook.getSheet("EU7");
+		int studentsLastRow = sheet.getLastRowNum();
 
 		//==================================================================================
 
@@ -61,7 +46,7 @@ public class Data_StudentBased {
 		//==================================================================================
 
 		WebDriver driver = Driver.get();
-		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get(ConfigurationReader.get("url"));
 
@@ -77,6 +62,7 @@ public class Data_StudentBased {
 
 		//==================================================================================
 		//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
+		//==================================================================================
 
 		wait.until(ExpectedConditions.numberOfWindowsToBe(2));
 
@@ -87,29 +73,76 @@ public class Data_StudentBased {
 		driver.get("https://learn.cybertekschool.com/courses/540");
 
 		//==================================================================================
-
-		int studentCount = 0;
-
-		for (int k = 0; k < 10; k++) {
+		//==================================================================================
 
 
-			for (String student : StudentsArray) {
-				++studentCount;
-				System.out.println(student);
-				int lessonCount = 0;
 
-				String studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\" + studentCount + " - " + student;
-				File studentFolderFile = new File(studentFolderString);
+		//==================================================================================
+		//==================================================================================
 
-				if (studentFolderFile.exists()) {
-					FileUtils.deleteDirectory(studentFolderFile);
-				}
+		ArrayList<String> AllLessonsArray = new ArrayList<>();
+		ArrayList<String> AllStudentsArray = new ArrayList<>();
 
-				//-----------------------------------------------
+		//===LessonsArray: get the URL's of each recording==================================
+		short lastLessonNum = sheet.getRow(1).getLastCellNum();
+		System.out.println(lastLessonNum);
 
-				for (int j = 0; j < LessonsArray.size(); j++) {
+		for (int i = 1; i < lastLessonNum; i++) {
+			String lesson = sheet.getRow(1).getCell(i).getStringCellValue();
+			AllLessonsArray.add(lesson);
+			System.out.println("Lessons: " + lesson);
+		}
 
-					driver.get(LessonsArray.get(j));
+		//===StudentsArray: to get each student name=======================================
+		for (int i = 2; i <= studentsLastRow; i++) {
+			String student = sheet.getRow(i).getCell(0).getStringCellValue();
+			AllStudentsArray.add(student);
+			System.out.println("student: " + student);
+		}
+
+		//=====LOOPING STARTS======================================================================================
+		//=====GOING THROUGH EACH STUDENTS======================================================================================
+
+
+		for (int studentIndexNo = 0; studentIndexNo < AllStudentsArray.size(); studentIndexNo++) {
+
+			System.out.println(AllStudentsArray.get(studentIndexNo) + "String student : StudentsArray");
+			int lessonCount = 0;
+
+			//=====CREATING LIST FOR 1 and 0s FOR EACH STUDENT=====================================
+			ArrayList<Double> watchListArray = new ArrayList<>();
+			for (int i = 1; i < lastLessonNum; i++) {
+				double watchedOrNot = sheet.getRow(studentIndexNo + 2).getCell(i).getNumericCellValue();
+				watchListArray.add(watchedOrNot);
+			}
+
+			//=====CREATING FOLDER FOR SCREENSHOTS===================================================
+
+			String studentFolderString = "";
+
+			int studentCount1 = 0;
+			int studentCount2 = 0;
+
+			if (studentIndexNo <= 13) {
+				studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-11\\" + ++studentCount1 + " - " + AllStudentsArray.get(studentIndexNo);
+			}else{
+				studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-12\\" + ++studentCount2 + " - " + AllStudentsArray.get(studentIndexNo);
+			}
+
+			File studentFolderFile = new File(studentFolderString);
+
+			if (studentFolderFile.exists()) {
+				FileUtils.deleteDirectory(studentFolderFile);
+			}
+
+
+			//====== GOING TROUGH EACH DATA (1 and 0) ============================================================================
+
+			for (int j = 0; j < watchListArray.size(); j++) {
+
+				if (watchListArray.get(j) == 0 && !AllLessonsArray.get(j).equals("null")) {
+
+					driver.get(AllLessonsArray.get(j));
 
 					for (int i = 0; i < 2; i++) {
 						try {
@@ -135,9 +168,10 @@ public class Data_StudentBased {
 					BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
 					for (int i = 0; i < 3; i++) {
-						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + student + "']"), 3);
+						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 3);
 						Thread.sleep(200);
 					}
+
 
 					BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
 
@@ -170,16 +204,17 @@ public class Data_StudentBased {
 
 					TakesScreenshot ts = (TakesScreenshot) driver;
 					File screenshot = ts.getScreenshotAs(OutputType.FILE);
-					File pngFolder = new File(studentFolderString + "\\" + student + " " + ++lessonCount + " - " + recordingName + ".png");
+					File pngFolder = new File(studentFolderString + "\\" + AllStudentsArray.get(studentIndexNo) + " " + ++lessonCount + " - " + recordingName + ".png");
 					FileUtils.copyFile(screenshot, pngFolder);
 
 				}
-
 			}
-
 		}
 
 	}
+
 }
+
+
 
 
