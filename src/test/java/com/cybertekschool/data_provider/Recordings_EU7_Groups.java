@@ -46,7 +46,7 @@ public class Recordings_EU7_Groups {
 		//==================================================================================
 
 		WebDriver driver = Driver.get();
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get(ConfigurationReader.get("url"));
 
@@ -103,6 +103,8 @@ public class Recordings_EU7_Groups {
 		//=====LOOPING STARTS======================================================================================
 		//=====GOING THROUGH EACH STUDENTS======================================================================================
 
+		int studentCount1 = 0;
+		int studentCount2 = 0;
 
 		for (int studentIndexNo = 0; studentIndexNo < AllStudentsArray.size(); studentIndexNo++) {
 
@@ -119,9 +121,6 @@ public class Recordings_EU7_Groups {
 			//=====CREATING FOLDER FOR SCREENSHOTS===================================================
 
 			String studentFolderString = "";
-
-			int studentCount1 = 0;
-			int studentCount2 = 0;
 
 			if (studentIndexNo <= 13) {
 				studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-11\\" + ++studentCount1 + " - " + AllStudentsArray.get(studentIndexNo);
@@ -168,7 +167,7 @@ public class Recordings_EU7_Groups {
 					BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
 					for (int i = 0; i < 3; i++) {
-						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 3);
+						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 2);
 						Thread.sleep(200);
 					}
 

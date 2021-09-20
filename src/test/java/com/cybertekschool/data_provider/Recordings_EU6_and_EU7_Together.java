@@ -106,6 +106,9 @@ public class Recordings_EU6_and_EU7_Together {
 			//=====LOOPING STARTS======================================================================================
 			//=====GOING THROUGH EACH STUDENTS======================================================================================
 
+			int studentCount1 = 0;
+			int studentCount2 = 0;
+			int studentCount3 = 0;
 
 			for (int studentIndexNo = 0; studentIndexNo < AllStudentsArray.size(); studentIndexNo++) {
 
@@ -123,17 +126,14 @@ public class Recordings_EU6_and_EU7_Together {
 
 				String studentFolderString = "";
 
-				int studentCount1 = 0;
-				int studentCount2 = 0;
-
 				if (group.equals("EU7")) {
-
-				}
-
-				if (studentIndexNo <= 13) {
-					studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-11\\" + ++studentCount1 + " - " + AllStudentsArray.get(studentIndexNo);
-				} else {
-					studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-12\\" + ++studentCount2 + " - " + AllStudentsArray.get(studentIndexNo);
+					if (studentIndexNo <= 13) {
+						studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-11\\" + ++studentCount1 + " - " + AllStudentsArray.get(studentIndexNo);
+					} else {
+						studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-12\\" + ++studentCount2 + " - " + AllStudentsArray.get(studentIndexNo);
+					}
+				} else if (group.equals("EU6")){
+					studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12\\" + ++studentCount3 + " - " + AllStudentsArray.get(studentIndexNo);
 				}
 
 				File studentFolderFile = new File(studentFolderString);

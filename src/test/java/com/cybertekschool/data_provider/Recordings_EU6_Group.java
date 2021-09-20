@@ -106,7 +106,6 @@ public class Recordings_EU6_Group {
 
 		for (int studentIndexNo = 0; studentIndexNo < AllStudentsArray.size(); studentIndexNo++) {
 
-			++studentCount;
 			System.out.println(AllStudentsArray.get(studentIndexNo) + "String student : StudentsArray");
 			int lessonCount = 0;
 
@@ -121,11 +120,7 @@ public class Recordings_EU6_Group {
 
 			String studentFolderString = "";
 
-			if (studentIndexNo <= 13) {
-				studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-11\\" + studentCount + " - " + AllStudentsArray.get(studentIndexNo);
-			}else{
-				studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\Group-12\\" + studentCount + " - " + AllStudentsArray.get(studentIndexNo);
-			}
+			studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12\\" + ++studentCount + " - " + AllStudentsArray.get(studentIndexNo);
 
 			File studentFolderFile = new File(studentFolderString);
 
