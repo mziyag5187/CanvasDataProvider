@@ -9,10 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -29,12 +26,12 @@ public class Recordings_EU6_Group {
 
 		//====================================================================================================
 
-		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
+		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler_copy.xlsx";
 		Workbook workbook = WorkbookFactory.create(new File(path));
 
 		//========================================================================
 
-		Sheet sheet = workbook.getSheet("EU6");
+		Sheet sheet = workbook.getSheet("EU6-2");
 		int studentsLastRow = sheet.getLastRowNum();
 
 		//==================================================================================
@@ -45,7 +42,7 @@ public class Recordings_EU6_Group {
 		//==================================================================================
 
 		WebDriver driver = Driver.get();
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(4, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get(ConfigurationReader.get("url"));
 
@@ -84,20 +81,23 @@ public class Recordings_EU6_Group {
 
 		//===LessonsArray: get the URL's of each recording==================================
 		short lastLessonNum = sheet.getRow(1).getLastCellNum();
-		System.out.println(lastLessonNum);
+		System.out.println("number of total recordings: " + lastLessonNum + "\n");
 
 		for (int i = 1; i < lastLessonNum; i++) {
-			String lesson = sheet.getRow(1).getCell(i).getStringCellValue();
-			AllLessonsArray.add(lesson);
-			System.out.println("Lessons: " + lesson);
+			String recordingName = sheet.getRow(1).getCell(i).getStringCellValue();
+			AllLessonsArray.add(recordingName);
+			System.out.println("Recording Name: " + recordingName);
 		}
+		System.out.println();
+
 
 		//===StudentsArray: to get each student name=======================================
 		for (int i = 2; i <= studentsLastRow; i++) {
 			String student = sheet.getRow(i).getCell(0).getStringCellValue();
 			AllStudentsArray.add(student);
-			System.out.println("student: " + student);
+			System.out.println("students: " + student);
 		}
+		System.out.println();
 
 		//=====LOOPING STARTS======================================================================================
 		//=====GOING THROUGH EACH STUDENTS======================================================================================
@@ -106,8 +106,8 @@ public class Recordings_EU6_Group {
 
 		for (int studentIndexNo = 0; studentIndexNo < AllStudentsArray.size(); studentIndexNo++) {
 
-			System.out.println(AllStudentsArray.get(studentIndexNo) + "String student : StudentsArray");
-			int lessonCount = 0;
+			System.out.println( "\nStudent in progress: " + AllStudentsArray.get(studentIndexNo));
+			int recordingCount = 0;
 
 			//=====CREATING LIST FOR 1 and 0s FOR EACH STUDENT=====================================
 			ArrayList<Double> watchListArray = new ArrayList<>();
@@ -136,6 +136,7 @@ public class Recordings_EU6_Group {
 				if (watchListArray.get(j) == 0 && !AllLessonsArray.get(j).equals("null")) {
 
 					driver.get(AllLessonsArray.get(j));
+					System.out.println("--Recording being checked: " + AllLessonsArray.get(j));
 
 					for (int i = 0; i < 2; i++) {
 						try {
@@ -160,10 +161,29 @@ public class Recordings_EU6_Group {
 
 					BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
-					for (int i = 0; i < 3; i++) {
-						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 3);
-						Thread.sleep(200);
+					//------------------------------------------------------------------------------
+
+					boolean key = false;
+					stdName:
+					for (int i = 0; i <2; i++) {
+						try {
+							WebElement studentName = driver.findElement(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"));
+							key = true;
+							break stdName;
+						} catch (Exception e) {
+							Thread.sleep(500);
+							key = false;
+						}
 					}
+
+					if (key) {
+						for (int i = 0; i < 3; i++) {
+							BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 2);
+							Thread.sleep(200);
+						}
+					}
+
+					//------------------------------------------------------------------------------
 
 
 					BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
@@ -197,7 +217,7 @@ public class Recordings_EU6_Group {
 
 					TakesScreenshot ts = (TakesScreenshot) driver;
 					File screenshot = ts.getScreenshotAs(OutputType.FILE);
-					File pngFolder = new File(studentFolderString + "\\" + AllStudentsArray.get(studentIndexNo) + " " + ++lessonCount + " - " + recordingName + ".png");
+					File pngFolder = new File(studentFolderString + "\\" + AllStudentsArray.get(studentIndexNo) + " " + ++recordingCount + " - " + recordingName + ".png");
 					FileUtils.copyFile(screenshot, pngFolder);
 
 				}
@@ -208,6 +228,12 @@ public class Recordings_EU6_Group {
 
 }
 
-
+//			studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12\\" + ++studentCount + " - " + AllStudentsArray.get(studentIndexNo);
+//
+//			File studentFolderFile = new File(studentFolderString);
+//
+//			if (studentFolderFile.exists()) {
+//					FileUtils.deleteDirectory(studentFolderFile);
+//					}
 
 

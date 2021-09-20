@@ -29,7 +29,7 @@ public class Recordings_EU6_and_EU7_Together {
 
 		//====================================================================================================
 
-		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
+		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler_copy.xlsx";
 		Workbook workbook = WorkbookFactory.create(new File(path));
 
 		//========================================================================
@@ -38,50 +38,51 @@ public class Recordings_EU6_and_EU7_Together {
 		groups.add("EU7");
 		groups.add("EU6");
 
+
+		//==================================================================================
+
+		String username = ConfigurationReader.get("username");
+		String password = ConfigurationReader.get("password");
+
+		//==================================================================================
+
+		WebDriver driver = Driver.get();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		driver.get(ConfigurationReader.get("url"));
+
+		//==================================================================================
+
+		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
+		driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
+		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
+		BrowserUtils.clickWithWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
+
+		WebDriverWait wait = new WebDriverWait(driver, 25);
+		wait.until(ExpectedConditions.urlContains("UserHome"));
+
+		//==================================================================================
+		//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
+		//==================================================================================
+
+		wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+
+		ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+		driver.switchTo().window(tabs2.get(1));
+		driver.close();
+		driver.switchTo().window(tabs2.get(0));
+		driver.get("https://learn.cybertekschool.com/courses/540");
+
+		//==================================================================================
+		//==================================================================================
+
+
+		//==================================================================================
+		//==================================================================================
+
 		for (String group : groups) {
 			Sheet sheet = workbook.getSheet(group);
 			int studentsLastRow = sheet.getLastRowNum();
-
-			//==================================================================================
-
-			String username = ConfigurationReader.get("username");
-			String password = ConfigurationReader.get("password");
-
-			//==================================================================================
-
-			WebDriver driver = Driver.get();
-			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-			driver.manage().window().maximize();
-			driver.get(ConfigurationReader.get("url"));
-
-			//==================================================================================
-
-			driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
-			driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
-			driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
-			BrowserUtils.clickWithWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
-
-			WebDriverWait wait = new WebDriverWait(driver, 25);
-			wait.until(ExpectedConditions.urlContains("UserHome"));
-
-			//==================================================================================
-			//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
-			//==================================================================================
-
-			wait.until(ExpectedConditions.numberOfWindowsToBe(2));
-
-			ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
-			driver.switchTo().window(tabs2.get(1));
-			driver.close();
-			driver.switchTo().window(tabs2.get(0));
-			driver.get("https://learn.cybertekschool.com/courses/540");
-
-			//==================================================================================
-			//==================================================================================
-
-
-			//==================================================================================
-			//==================================================================================
 
 			ArrayList<String> AllLessonsArray = new ArrayList<>();
 			ArrayList<String> AllStudentsArray = new ArrayList<>();
@@ -89,19 +90,23 @@ public class Recordings_EU6_and_EU7_Together {
 			//===LessonsArray: get the URL's of each recording==================================
 			short lastLessonNum = sheet.getRow(1).getLastCellNum();
 			System.out.println(lastLessonNum);
+			System.out.println("number of total recordings: " + lastLessonNum + "\n");
+
 
 			for (int i = 1; i < lastLessonNum; i++) {
-				String lesson = sheet.getRow(1).getCell(i).getStringCellValue();
-				AllLessonsArray.add(lesson);
-				System.out.println("Lessons: " + lesson);
+				String recordingName = sheet.getRow(1).getCell(i).getStringCellValue();
+				AllLessonsArray.add(recordingName);
+				System.out.println("Recording Name: " + recordingName);
 			}
+			System.out.println();
 
 			//===StudentsArray: to get each student name=======================================
 			for (int i = 2; i <= studentsLastRow; i++) {
 				String student = sheet.getRow(i).getCell(0).getStringCellValue();
 				AllStudentsArray.add(student);
-				System.out.println("student: " + student);
+				System.out.println("students: " + student);
 			}
+			System.out.println();
 
 			//=====LOOPING STARTS======================================================================================
 			//=====GOING THROUGH EACH STUDENTS======================================================================================
@@ -109,11 +114,12 @@ public class Recordings_EU6_and_EU7_Together {
 			int studentCount1 = 0;
 			int studentCount2 = 0;
 			int studentCount3 = 0;
+			int studentCount4 = 0;
 
 			for (int studentIndexNo = 0; studentIndexNo < AllStudentsArray.size(); studentIndexNo++) {
 
-				System.out.println(AllStudentsArray.get(studentIndexNo) + "String student : StudentsArray");
-				int lessonCount = 0;
+				System.out.println("\nStudent in progress: " + AllStudentsArray.get(studentIndexNo));
+				int recordingCount = 0;
 
 				//=====CREATING LIST FOR 1 and 0s FOR EACH STUDENT=====================================
 				ArrayList<Double> watchListArray = new ArrayList<>();
@@ -129,11 +135,13 @@ public class Recordings_EU6_and_EU7_Together {
 				if (group.equals("EU7")) {
 					if (studentIndexNo <= 13) {
 						studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-11\\" + ++studentCount1 + " - " + AllStudentsArray.get(studentIndexNo);
-					} else {
+					} else if (studentIndexNo > 13 && studentIndexNo <= 27) {
 						studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-12\\" + ++studentCount2 + " - " + AllStudentsArray.get(studentIndexNo);
+					} else {
+						studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-23\\" + ++studentCount3 + " - " + AllStudentsArray.get(studentIndexNo);
 					}
-				} else if (group.equals("EU6")){
-					studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12\\" + ++studentCount3 + " - " + AllStudentsArray.get(studentIndexNo);
+				} else if (group.equals("EU6")) {
+					studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12\\" + ++studentCount4 + " - " + AllStudentsArray.get(studentIndexNo);
 				}
 
 				File studentFolderFile = new File(studentFolderString);
@@ -150,6 +158,7 @@ public class Recordings_EU6_and_EU7_Together {
 					if (watchListArray.get(j) == 0 && !AllLessonsArray.get(j).equals("null")) {
 
 						driver.get(AllLessonsArray.get(j));
+						System.out.println("--Recording being checked: " + AllLessonsArray.get(j));
 
 						for (int i = 0; i < 2; i++) {
 							try {
@@ -175,7 +184,7 @@ public class Recordings_EU6_and_EU7_Together {
 						BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
 						for (int i = 0; i < 3; i++) {
-							BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 3);
+							BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + AllStudentsArray.get(studentIndexNo) + "']"), 2);
 							Thread.sleep(200);
 						}
 
@@ -211,7 +220,7 @@ public class Recordings_EU6_and_EU7_Together {
 
 						TakesScreenshot ts = (TakesScreenshot) driver;
 						File screenshot = ts.getScreenshotAs(OutputType.FILE);
-						File pngFolder = new File(studentFolderString + "\\" + AllStudentsArray.get(studentIndexNo) + " " + ++lessonCount + " - " + recordingName + ".png");
+						File pngFolder = new File(studentFolderString + "\\" + AllStudentsArray.get(studentIndexNo) + " " + ++recordingCount + " - " + recordingName + ".png");
 						FileUtils.copyFile(screenshot, pngFolder);
 
 					}
