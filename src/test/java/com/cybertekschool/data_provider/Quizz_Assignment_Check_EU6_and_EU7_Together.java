@@ -11,30 +11,29 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-
-public class Recordings_EU6_and_EU7_Together extends BasePage {
-
-
-	String sheetAdded1 = "EU7-Recordings";
-	String sheetAdded2 = "EU6-Recordings";
+public class Quizz_Assignment_Check_EU6_and_EU7_Together extends BasePage {
 
 
-	public Recordings_EU6_and_EU7_Together() throws IOException {
+	String sheetAdded1 = "EU7-QuizAssign (2)";
+	String sheetAdded2 = "EU6-QuizAssign";
+
+
+	public Quizz_Assignment_Check_EU6_and_EU7_Together() throws IOException {
 	}
 
 
 	@Test
 	public void Canvas() throws InterruptedException, IOException {
 
+
 		ArrayList<String> excelPagesList = new ArrayList<>();
 		excelPagesList.add(sheetAdded1);
-		excelPagesList.add(sheetAdded2);
+//		sheetsList.add(sheetAdded2);
 
 		//==================================================================================
 
@@ -68,9 +67,7 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 		//==================================================================================
 
 
-		//==================================================================================
-		//==================================================================================
-
+		//====CREATING GROUPS==============================================================================
 
 		for (int k = 0; k < excelPagesList.size(); k++) {
 
@@ -91,12 +88,12 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 					String taskNameFromURL = currentExcelPage.getRow(URLs_Row_StartsFrom).getCell(i).getStringCellValue();
 					allURLsList.add(taskNameFromURL);
 					//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-					System.out.println("Recording Name: " + taskNameFromURL);
+					System.out.println("Quiz/Assign Name: " + taskNameFromURL);
 				}
 			}
 
 			//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			System.out.println("Number of Total Recordings: " + allURLsList.size() + "\n");
+			System.out.println("Number of Total Quiz/Assign: " + allURLsList.size() + "\n");
 
 			//get all students in a list
 			for (int i = studentNameRowStartsFrom; i <= lastRowNumInSheet; i++) {
@@ -107,6 +104,12 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 				}
 			}
 			System.out.println();
+
+
+
+
+
+
 
 
 			int eu7CountGroup1 = 0;
@@ -137,11 +140,11 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 						System.exit(0);
 					}
 
+
 					//if there is no missing recording/quiz, print out a message and don't create a folder
 					if (!dataList.contains(0.0)) {
 						System.out.println("--No Missing Quiz/Assign");
 					} else {
-
 
 						//Creating Folder for screenshots
 						String studentFolderString = "";
@@ -173,7 +176,11 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 								driver.get(allURLsList.get(j));
 
 								//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-								System.out.println("--Recording being checked: " + allURLsList.get(j));
+								System.out.println("--Quiz/Assign being checked: " + allURLsList.get(j));
+
+
+
+
 
 
 
@@ -184,88 +191,32 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 
 								//======================================================================
 								//!!!Distinction point!!!
-								for (int i = 0; i < 2; i++) {
+								//click on people---------------------------------------------------------
+								BrowserUtils.clickWithJSWait(By.xpath("//a[@class='people']"), 3);
+
+
+								//find and click on student name------------------------------------------
+
+								JavascriptExecutor js = (JavascriptExecutor) driver;
+
+								isDisplayed:
+								for (int i = 0; i < 12; i++) {
 									try {
-										driver.switchTo().defaultContent();
-										break;
-									} catch (Exception e) {
-										Thread.sleep(800);
-										e.printStackTrace();
-									}
-								}
+										js.executeScript("window.scrollBy(0,15000)", "");
 
+										if (driver.findElement(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]")).isDisplayed()) {
+											BrowserUtils.clickWithJSWait(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 2);
+											break isDisplayed;
+										}
 
-								for (int i = 0; i < 2; i++) {
-									try {
-										driver.switchTo().frame(1);
-										break;
-									} catch (Exception e) {
-										Thread.sleep(800);
-										e.printStackTrace();
-									}
-								}
-
-								//------------------------------------------------------------------------------
-
-								BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"tab-insights\"]"), 7);
-
-								//------------------------------------------------------------------------------
-
-								boolean key = false;
-								stdName:
-								for (int i = 0; i < 2; i++) {
-									try {
-										WebElement studentName = driver.findElement(By.xpath("//span[@name = '" + All_Students_List.get(studentIndexNo) + "']"));
-										key = true;
-										break stdName;
-									} catch (Exception e) {
-										Thread.sleep(500);
-										key = false;
-									}
-								}
-
-								if (key) {
-									for (int i = 0; i < 3; i++) {
-										BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + All_Students_List.get(studentIndexNo) + "']"), 2);
-										Thread.sleep(200);
-									}
-								}
-
-
-								//To scroll up to yop:
-								ScreenReaderContent:
-								for (int i = 0; i < 3; i++) {
-									try {
-										BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
-										break ScreenReaderContent;
 									} catch (Exception e) {
 										Thread.sleep(1000);
 									}
 								}
 
-								for (int t = 1; t < 5; t++) {
-									try {
-										driver.switchTo().defaultContent();
-										break;
-									} catch (Exception e) {
-										Thread.sleep(1000);
-										e.printStackTrace();
-									}
-
-								}
-
-								BrowserUtils.scrollToElement(driver.findElement(By.id("breadcrumbs")));
-
-
-								//to trim the recording name
-								String recordingName = driver.findElement(By.cssSelector("h1.page-title")).getText();
-								recordingName = recordingName.replace(":", "");
-								recordingName = recordingName.replace("|", "");
-								recordingName = recordingName.replace("~", "");
-								recordingName = recordingName.replace("!", "");
-								recordingName = recordingName.replace("%", "");
-								recordingName = recordingName.replace("RECORDING", "");
-								Thread.sleep(3000);
+								BrowserUtils.waitForClickablility(By.xpath("//a[contains(@aria-label,'View grades')]"), 5);
+								BrowserUtils.clickWithTimeOut(By.xpath("//a[contains(@aria-label,'View grades')]"), 5);
+								Thread.sleep(500);
 
 
 
@@ -275,12 +226,11 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 
 
 
+								//------------------------------------------------------------------------------
 
-
-								//Distinction Ends Here===================================================
 								TakesScreenshot ts = (TakesScreenshot) driver;
 								File screenshot = ts.getScreenshotAs(OutputType.FILE);
-								File pngFolder = new File(studentFolderString + "\\" + All_Students_List.get(studentIndexNo) + " " + ++taskCount + " - " + recordingName + ".png");
+								File pngFolder = new File(studentFolderString + "\\" + All_Students_List.get(studentIndexNo) + " " + ++taskCount + ".png");
 								FileUtils.copyFile(screenshot, pngFolder);
 
 							}
@@ -288,10 +238,11 @@ public class Recordings_EU6_and_EU7_Together extends BasePage {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-
 				}
+
 			}
 		}
+
 	}
 }
 

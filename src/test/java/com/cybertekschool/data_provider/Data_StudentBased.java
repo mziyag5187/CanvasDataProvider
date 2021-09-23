@@ -5,7 +5,6 @@ import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
 import com.cybertekschool.utilities.Driver;
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -70,7 +69,7 @@ public class Data_StudentBased {
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
-		BrowserUtils.clickWithWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
+		BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
 
 		WebDriverWait wait = new WebDriverWait(driver, 25);
 		wait.until(ExpectedConditions.urlContains("UserHome"));
@@ -132,7 +131,7 @@ public class Data_StudentBased {
 						}
 					}
 
-					BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
+					BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
 					for (int i = 0; i < 3; i++) {
 						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + student + "']"), 3);

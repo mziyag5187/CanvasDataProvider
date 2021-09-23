@@ -380,7 +380,7 @@ public class BrowserUtils {
      * @param by
      * @param attempts
      */
-    public static void clickWithWait(By by, int attempts) {
+    public static void clickWithJSWait(By by, int attempts) {
         int counter = 0;
         //click on element as many as you specified in attempts parameter
         while (counter < attempts) {

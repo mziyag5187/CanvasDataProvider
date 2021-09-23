@@ -31,7 +31,7 @@ public class Recordings_EU6_Group {
 
 		//========================================================================
 
-		Sheet sheet = workbook.getSheet("EU6-2");
+		Sheet sheet = workbook.getSheet("EU6-Recordings");
 		int studentsLastRow = sheet.getLastRowNum();
 
 		//==================================================================================
@@ -51,7 +51,7 @@ public class Recordings_EU6_Group {
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
-		BrowserUtils.clickWithWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
+		BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
 
 		WebDriverWait wait = new WebDriverWait(driver, 25);
 		wait.until(ExpectedConditions.urlContains("UserHome"));
@@ -84,18 +84,22 @@ public class Recordings_EU6_Group {
 		System.out.println("number of total recordings: " + lastLessonNum + "\n");
 
 		for (int i = 1; i < lastLessonNum; i++) {
+			if (sheet.getRow(1).getCell(i) != null) {
 			String recordingName = sheet.getRow(1).getCell(i).getStringCellValue();
 			AllLessonsArray.add(recordingName);
 			System.out.println("Recording Name: " + recordingName);
+			}
 		}
 		System.out.println();
 
 
 		//===StudentsArray: to get each student name=======================================
 		for (int i = 2; i <= studentsLastRow; i++) {
-			String student = sheet.getRow(i).getCell(0).getStringCellValue();
-			AllStudentsArray.add(student);
-			System.out.println("students: " + student);
+			if (sheet.getRow(i).getCell(0) != null) {
+				String student = sheet.getRow(i).getCell(0).getStringCellValue();
+				AllStudentsArray.add(student);
+				System.out.println("students: " + student);
+			}
 		}
 		System.out.println();
 
@@ -159,7 +163,7 @@ public class Recordings_EU6_Group {
 						}
 					}
 
-					BrowserUtils.clickWithWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
+					BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
 
 					//------------------------------------------------------------------------------
 
