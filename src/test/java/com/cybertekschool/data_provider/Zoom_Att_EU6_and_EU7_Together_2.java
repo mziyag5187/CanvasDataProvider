@@ -1,146 +1,176 @@
 package com.cybertekschool.data_provider;
 
 
-import com.cybertekschool.utilities.BrowserUtils;
-import com.cybertekschool.utilities.ConfigurationReader;
-import com.cybertekschool.utilities.Driver;
-import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 
+public class Zoom_Att_EU6_and_EU7_Together_2 extends BasePage_2 {
 
+	String zoomSheetEU7 = "Zoom-EU7";
+	String zoomSheetEU6 = "Zoom-EU6";
 
-public class Zoom_Att_EU6_and_EU7_Together extends BasePage{
+	String mailSheetEU7 = "Zoom-EU7-EmailList";
+	String mailSheetEU6 = "Zoom-EU6-EmailList";
 
-
-
-	String sheetAdded1 = "Zoom-EU7";
-	String sheetAdded2 = "Zoom-EU6";
-
-	String recordingSheet1 = "EU7-Recordings";
-	String recordingSheet2 = "EU6-Recordings";
-
-
-
-	public Zoom_Att_EU6_and_EU7_Together() throws IOException {
+	public Zoom_Att_EU6_and_EU7_Together_2() throws IOException {
 	}
-
 
 
 	@Test
 	public void Canvas() throws InterruptedException, IOException {
 
 
-		ArrayList<String> sheetsList = new ArrayList<>();
-		sheetsList.add(sheetAdded1);
-		sheetsList.add(sheetAdded2);
+		ArrayList<String> allGroupsZoomSheet = new ArrayList<>();
+		allGroupsZoomSheet.add(zoomSheetEU7);
+		allGroupsZoomSheet.add(zoomSheetEU6);
 
 
 		//==========================================================
 
 
-		for (String excelPage : sheetsList) {
-
-			//=== GET ALL STUDENT NAMES FROM EU7 and EU6 GROUPS ===
+		//going through each zoom sheet (eu7 and eu6)
+		for (String eachGroupZoomSheet : allGroupsZoomSheet) {
 
 			//--- Create Sheet Object based on Batch---------------
-			Sheet sheet1 = null;
-			Sheet sheet2 = null;
+			Sheet mailsSheet = null;
+			Sheet zoomSheet = null;
 
-			if (excelPage.equals(sheetAdded1)) {
-				sheet1 = workbook.getSheet(recordingSheet1);
-				sheet2 = workbook.getSheet(sheetAdded1);
-			} else if (excelPage.equals(sheetAdded2)) {
-				sheet1 = workbook.getSheet(recordingSheet2);
-				sheet2 = workbook.getSheet(sheetAdded2);
+			if (eachGroupZoomSheet.equals(zoomSheetEU7)) {
+				mailsSheet = workbook.getSheet(mailSheetEU7);
+				zoomSheet = workbook.getSheet(zoomSheetEU7);
+			} else if (eachGroupZoomSheet.equals(zoomSheetEU6)) {
+				mailsSheet = workbook.getSheet(mailSheetEU6);
+				zoomSheet = workbook.getSheet(zoomSheetEU6);
 			}
 
+			//--- Get all student name and mails from excel mails sheet ---------------
+			ArrayList<String> studentNames = new ArrayList<>();
+			ArrayList<String> studentEmails = new ArrayList<>();
 
-			//--- Get all student names from groups ---------------
+			int lastRowNumInSheet = mailsSheet.getLastRowNum();
+			for (int i = studentNameRowStartsFrom; i <= lastRowNumInSheet; i++) {
+				if (mailsSheet.getRow(i).getCell(studentNameColumnStartsFrom) != null) {
+					String studentName = mailsSheet.getRow(i).getCell(studentNameColumnStartsFrom).getStringCellValue();
+					studentNames.add(studentName);
 
-			ArrayList<String> AllStudentsArray = new ArrayList<>();
-			int studentsLastRow = sheet1.getLastRowNum();
+					String studentMail = mailsSheet.getRow(i).getCell(studentNameColumnStartsFrom + 1).getStringCellValue();
+					studentEmails.add(studentMail);
+				}
+			}
+			System.out.println();
+			System.out.println("Number of total students: " + studentNames.size());
+			System.out.println();
 
-			for (int i = 2; i <= studentsLastRow; i++) {
-				if (sheet1.getRow(i).getCell(0) != null) {
-					String student = sheet1.getRow(i).getCell(0).getStringCellValue();
-					AllStudentsArray.add(student);
+
+			//--- Get all student mails and duration from excel zoom sheet ---------------
+			ArrayList<String> zoomAttEmails = new ArrayList<>();
+			ArrayList<Double> zoomAttDurations = new ArrayList<>();
+
+			int lastRowNumInSheet2 = zoomSheet.getLastRowNum();
+			for (int i = 1; i <= lastRowNumInSheet2; i++) {
+				if (zoomSheet.getRow(i).getCell(1) != null) {
+					String zoomMail = zoomSheet.getRow(i).getCell(1).getStringCellValue();
+					zoomAttEmails.add(zoomMail);
+
+					double zoomDuration = zoomSheet.getRow(i).getCell(2).getNumericCellValue();
+					zoomAttDurations.add(zoomDuration);
 				}
 			}
 			System.out.println();
 
 
-			//===GET ALL STUDENT NAMES FROM ZOOM LISTS==========================================
+			for (int i = 0; i < studentNames.size(); i++) {
+				for (int j = 0; j < zoomAttEmails.size(); j++) {
 
-			//---Get all names and attendances duration in key value format from zoom list
-			Map<String, Double> AllZoomAttendancesMap = new HashMap<>();
-			int zoomLastRow = sheet2.getLastRowNum();
+					if (studentEmails.get(i).equals(zoomAttEmails.get(j))) {
+//						System.out.println(studentNames.get(i) + ": " + zoomAttDurations.get(j));
 
-			String student = "";
-			Double duration = 0.0;
+						if (eachGroupZoomSheet.equals(zoomSheetEU7)) {
+							if (i < eu7group1) {
+								System.out.println("EU7 / Group-11: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								if (i == eu7group1-2) {
+								}
+							} else if (i >= eu7group1 && i < eu7group1 + eu7group2) {
+								System.out.println("EU7 / Group-12: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								if (i == eu7group1 + eu7group2 - 1) {
+								}
+							} else {
+								System.out.println("EU7 / Group-23: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+							}
 
-			for (int i = 0; i <= zoomLastRow; i++) {
-				if (sheet2.getRow(i).getCell(0) != null) {
-					student = sheet2.getRow(i).getCell(0).getStringCellValue();
-				}
-
-				if (sheet2.getRow(i).getCell(2) != null) {
-					duration = sheet2.getRow(i).getCell(2).getNumericCellValue();
-				}
-				AllZoomAttendancesMap.put(student, duration);
-			}
-			System.out.println();
-
-
-			//===GET STUDENT NAME FROM GROUPS AND COMPARE IT TO ZOOM LIST======================
-
-
-			for (int i = 0; i < AllStudentsArray.size(); i++) {
-				if (excelPage.equals("Zoom-EU7")) {
-					if (i < 14) {
-						System.out.println("EU7 / Group-11: " + AllStudentsArray.get(i) + ": " + AllZoomAttendancesMap.get(AllStudentsArray.get(i)));
-						if (i == 13) {
-							System.out.println();
+						} else if (eachGroupZoomSheet.equals(zoomSheetEU6)) {
+							System.out.println("EU6 / Group-12: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
 						}
-					} else if (i >= 14 && i < 27) {
-						System.out.println("EU7 / Group-12: " + AllStudentsArray.get(i) + ": " + AllZoomAttendancesMap.get(AllStudentsArray.get(i)));
-						if (i == 26) {
-							System.out.println();
-						}
-					} else {
-						System.out.println("EU7 / Group-23: " + AllStudentsArray.get(i) + ": " + AllZoomAttendancesMap.get(AllStudentsArray.get(i)));
+						System.out.println();
 					}
 
-				} else if (excelPage.equals("Zoom-EU6")) {
-					System.out.println("EU6 / Group-12: " + AllStudentsArray.get(i) + ": " + AllZoomAttendancesMap.get(AllStudentsArray.get(i)));
 				}
-				System.out.println();
-
 			}
-
-
-
-
 
 		}
 
 
+//
+//
+//			//===GET STUDENT NAME FROM GROUPS AND COMPARE IT TO ZOOM LIST======================
+//
+//			for (int studentIndexNo = 0; studentIndexNo < ZoomAttendanceMap.size(); studentIndexNo++) {
+//
+//				if (eachGroupZoomSheet.equals(zoomSheetEU7)) {
+//
+//					if (studentIndexNo < eu7group1) {           //name                                                      //duration
+//						System.out.println("EU7 / Group-11: " + NameAndMailsMap.keySet().toArray()[studentIndexNo] + ": " + ZoomAttendanceMap.get(NameAndMailsMap.keySet().toArray()[studentIndexNo]));
+//						if (studentIndexNo == eu7group1-1) {
+//							System.out.println();
+//						}
+//					} else if (studentIndexNo >= eu7group1 && studentIndexNo < eu7group1 + eu7group2) {
+//						System.out.println("EU7 / Group-12: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//						if (studentIndexNo == eu7group1 + eu7group2 -1) {
+//							System.out.println();
+//						}
+//					} else {
+//						System.out.println("EU7 / Group-23: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//
+//					}
+//				} else if (eachGroupZoomSheet.equals(zoomSheetEU6)) {
+//					System.out.println("EU6 / Group-12: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//				}
+//				System.out.println();
+
+
+//				if (eachZoomSheet.equals("Zoom-EU7")) {
+//					if (studentIndexNo < 14) {
+//						System.out.println("EU7 / Group-11: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//						if (studentIndexNo == 13) {
+//							System.out.println();
+//						}
+//					} else if (studentIndexNo >= 14 && studentIndexNo < 27) {
+//						System.out.println("EU7 / Group-12: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//						if (studentIndexNo == 26) {
+//							System.out.println();
+//						}
+//					} else {
+//						System.out.println("EU7 / Group-23: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//					}
+//
+//				} else if (eachZoomSheet.equals("Zoom-EU6")) {
+//					System.out.println("EU6 / Group-12: " + ZoomAttendanceMap.get(studentIndexNo) + ": " + ZoomAttendanceMap.get(ZoomAttendanceMap.get(studentIndexNo)));
+//				}
+//				System.out.println();
+//			}
+
 
 	}
+
+
 }
+
 
 
 

@@ -298,7 +298,7 @@ public class BrowserUtils {
      * @param element
      */
     public static void highlight(WebElement element) {
-        ((JavascriptExecutor) Driver.get()).executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');", element);
+        ((JavascriptExecutor) Driver.get()).executeScript("        ((JavascriptExecutor) Driver.get()).executeScript(\"');\", element);\n;", element);
         waitFor(1);
         ((JavascriptExecutor) Driver.get()).executeScript("arguments[0].removeAttribute('style', 'background: yellow; border: 2px solid red;');", element);
     }

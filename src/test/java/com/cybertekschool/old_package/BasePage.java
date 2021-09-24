@@ -1,8 +1,7 @@
-package com.cybertekschool.data_provider;
+package com.cybertekschool.old_package;
 
 import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
-import com.cybertekschool.utilities.Driver;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -43,7 +42,7 @@ public class BasePage {
 	static String username = ConfigurationReader.get("username");
 	static String password = ConfigurationReader.get("password");
 
-	String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler_copy.xlsx";
+	String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
 	Workbook workbook = WorkbookFactory.create(new File(path));
 
 	//=========================================================

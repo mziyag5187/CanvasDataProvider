@@ -1,18 +1,11 @@
-package com.cybertekschool.data_provider;
+package com.cybertekschool.old_package;
 
-import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
-import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class BasePage_copy {
 
@@ -40,7 +33,7 @@ public class BasePage_copy {
 	static String username = ConfigurationReader.get("username");
 	static String password = ConfigurationReader.get("password");
 
-	String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler_copy.xlsx";
+	String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
 	Workbook workbook = WorkbookFactory.create(new File(path));
 
 

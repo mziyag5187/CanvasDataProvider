@@ -1,4 +1,4 @@
-package com.cybertekschool.data_provider;
+package com.cybertekschool.old_package;
 
 
 import com.cybertekschool.utilities.BrowserUtils;
@@ -26,7 +26,7 @@ public class Recordings_EU7_Groups {
 
 		//====================================================================================================
 
-		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler_copy.xlsx";
+		String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
 		Workbook workbook = WorkbookFactory.create(new File(path));
 
 		//========================================================================

@@ -1,14 +1,14 @@
-package com.cybertekschool.data_provider;
+package com.cybertekschool.old_package;
 
 
 import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
 import com.cybertekschool.utilities.Driver;
-import org.junit.Test;
-
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class Data_RecordingBased {
+public class Data_StudentBased {
 
 
 	@Test
@@ -41,17 +41,15 @@ public class Data_RecordingBased {
 
 		//========================================================================
 
-		String mesaj = lessonList.getRow(0).getCell(0).getStringCellValue();
-		System.out.println(mesaj);
 
-		for (int i = 1; i <= lessonsLastRow; i++) {
+		for (int i = 0; i <= lessonsLastRow; i++) {
 			LessonsArray.add(lessonList.getRow(i).getCell(0).getStringCellValue());
-			System.out.println(LessonsArray.get(i - 1));
+			System.out.println(LessonsArray.get(i));
 		}
 
-		for (int i = 1; i <= studentsLastRow; i++) {
+		for (int i = 0; i <= studentsLastRow; i++) {
 			StudentsArray.add(studentList.getRow(i).getCell(0).getStringCellValue());
-			System.out.println(StudentsArray.get(i - 1));
+			System.out.println(StudentsArray.get(i));
 		}
 
 		//==================================================================================
@@ -62,7 +60,7 @@ public class Data_RecordingBased {
 		//==================================================================================
 
 		WebDriver driver = Driver.get();
-		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS) ;
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get(ConfigurationReader.get("url"));
 
@@ -73,7 +71,7 @@ public class Data_RecordingBased {
 		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
 		BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
 
-		WebDriverWait wait = new WebDriverWait(driver,25);
+		WebDriverWait wait = new WebDriverWait(driver, 25);
 		wait.until(ExpectedConditions.urlContains("UserHome"));
 
 		//==================================================================================
@@ -89,61 +87,98 @@ public class Data_RecordingBased {
 
 		//==================================================================================
 
-		for (String lesson : LessonsArray) {
+		int studentCount = 0;
 
-			driver.get(lesson);
-			driver.switchTo().defaultContent();
-			driver.switchTo().frame(1);
+		for (int k = 0; k < 10; k++) {
+
 
 			for (String student : StudentsArray) {
+				++studentCount;
+				System.out.println(student);
+				int lessonCount = 0;
 
-				for (int i = 1; i < 2; i++) {
-					try {
-						driver.switchTo().frame(1);
-						break;
-					} catch (Exception e) {
-						Thread.sleep(1000);
-						e.printStackTrace();
-					}
+				String studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\" + studentCount + " - " + student;
+				File studentFolderFile = new File(studentFolderString);
+
+				if (studentFolderFile.exists()) {
+					FileUtils.deleteDirectory(studentFolderFile);
 				}
 
-				BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
+				//-----------------------------------------------
 
-				try2:
-				try {
-					BrowserUtils.clickWithTimeOut(By.xpath("//*[.=\"" + student + "\"]"), 3);
-					System.out.println(driver.findElement(By.xpath("//*[.=\"" + student + "\"]")).getText());
-					break try2;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				for (int j = 0; j < LessonsArray.size(); j++) {
 
+					driver.get(LessonsArray.get(j));
 
-				BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
-
-				for (int j = 1; j < 5; j++) {
-					try {
-						driver.switchTo().defaultContent();
-						break;
-					} catch (Exception e) {
-						Thread.sleep(1000);
-						e.printStackTrace();
+					for (int i = 0; i < 2; i++) {
+						try {
+							driver.switchTo().defaultContent();
+							break;
+						} catch (Exception e) {
+							Thread.sleep(800);
+							e.printStackTrace();
+						}
 					}
 
+
+					for (int i = 0; i < 2; i++) {
+						try {
+							driver.switchTo().frame(1);
+							break;
+						} catch (Exception e) {
+							Thread.sleep(800);
+							e.printStackTrace();
+						}
+					}
+
+					BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"tab-insights\"]"), 5);
+
+					for (int i = 0; i < 3; i++) {
+						BrowserUtils.clickWithTimeOut(By.xpath("//span[@name = '" + student + "']"), 3);
+						Thread.sleep(200);
+					}
+
+					BrowserUtils.scrollToElement(driver.findElement(By.className("ScreenReaderContent")));
+
+					for (int t = 1; t < 5; t++) {
+						try {
+							driver.switchTo().defaultContent();
+							break;
+						} catch (Exception e) {
+							Thread.sleep(1000);
+							e.printStackTrace();
+						}
+
+					}
+
+					BrowserUtils.scrollToElement(driver.findElement(By.id("breadcrumbs")));
+
+
+					String recordingName = driver.findElement(By.cssSelector("h1.page-title")).getText();
+					recordingName = recordingName.replace(":", "");
+					recordingName = recordingName.replace("|", "");
+					recordingName = recordingName.replace("~", "");
+					recordingName = recordingName.replace("!", "");
+					recordingName = recordingName.replace("%", "");
+					recordingName = recordingName.replace("RECORDING", "");
+					Thread.sleep(2500);
+
+
+					//-------------------------------------------------------
+
+
+					TakesScreenshot ts = (TakesScreenshot) driver;
+					File screenshot = ts.getScreenshotAs(OutputType.FILE);
+					File pngFolder = new File(studentFolderString + "\\" + student + " " + ++lessonCount + " - " + recordingName + ".png");
+					FileUtils.copyFile(screenshot, pngFolder);
+
 				}
-
-				BrowserUtils.scrollToElement(driver.findElement(By.id("breadcrumbs")));
-				BrowserUtils.waitFor(3);
-
-				//-------------------------------------------------------
-
-
-
 
 			}
 
-
 		}
+
 	}
 }
+
 
