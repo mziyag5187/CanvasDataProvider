@@ -1,4 +1,4 @@
-package com.cybertekschool.data_provider;
+package com.cybertekschool.data_provider_3;
 
 import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class BasePage_2 {
+public class BasePage_3 {
 
 	WebDriver driver;
 
-	public BasePage_2() throws IOException {
+	public BasePage_3() throws IOException {
 	}
 
 	//excel sheet recording row no
@@ -72,19 +72,23 @@ public class BasePage_2 {
 				System.out.println("Last column number in current sheet: " + lastColNumInSheet + "\n");
 
 
+				//********************\\
 				//get all URLs in a list
 				for (int i = URLs_or_data_Column_StartsFrom; i < lastColNumInSheet; i++) {
 					if (currentExcelPage.getRow(URLs_Row_StartsFrom).getCell(i) != null) {
 						String taskNameFromURL = currentExcelPage.getRow(URLs_Row_StartsFrom).getCell(i).getStringCellValue();
-						allURLsList.add(taskNameFromURL);
-						//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-						System.out.println(messages.get(0) + taskNameFromURL);
+						if (!taskNameFromURL.isEmpty()) {
+							allURLsList.add(taskNameFromURL);
+							//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+							System.out.println(messages.get(0) + taskNameFromURL);
+						}
 					}
 				}
 
 				//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				System.out.println(messages.get(1) + allURLsList.size() + "\n");
 
+				//********************\\
 				//get all students in a list
 				for (int i = studentNameRowStartsFrom; i <= lastRowNumInSheet; i++) {
 					if (currentExcelPage.getRow(i).getCell(studentNameColumnStartsFrom) != null) {
@@ -110,19 +114,28 @@ public class BasePage_2 {
 						System.out.println("\nStudent in progress: " + All_Students_List.get(studentIndexNo));
 						int taskCount = 0;
 
+
+						//****************************\\
 						//getting data from each student
 						ArrayList<Double> dataList = new ArrayList<>();
-						for (int i = URLs_or_data_Column_StartsFrom; i < lastColNumInSheet; i++) {
+						int missingTask = 0;
+						for (int i = URLs_or_data_Column_StartsFrom; i < URLs_or_data_Column_StartsFrom + allURLsList.size(); i++) {
 							double studentData = currentExcelPage.getRow(studentIndexNo + studentNameRowStartsFrom).getCell(i).getNumericCellValue();
 							dataList.add(studentData);
+							if (studentData == 0.0) {
+								missingTask++;
+							}
 						}
 						System.out.println("--number of total data from student: " + dataList.size());
+						System.out.println(messages.get(4) + missingTask);
+
 
 						//check if the number of total data and number of total urls is the same
 						if (dataList.size() != allURLsList.size()) {
 							System.out.println("number of total data and number of total urls does not match");
 							System.exit(0);
 						}
+
 
 						//if there is no missing recording/quiz, print out a message and don't create a folder
 						if (!dataList.contains(0.0)) {
@@ -341,7 +354,7 @@ public class BasePage_2 {
 			quizName:
 			for (int i = 0; i < 3; i++) {
 				try {
-					quizAssignWE = driver.findElement(By.xpath("//*[@id='quiz_title']"));
+					quizAssignWE = driver.findElement(By.xpath("(//span[@class='ellipsible'])[4]"));
 					quizAssigntext = quizAssignWE.getText();
 					break quizName;
 				} catch (Exception e) {
@@ -378,9 +391,9 @@ public class BasePage_2 {
 		}
 
 		searchButton.sendKeys(All_Students_List.get(studentIndexNo));
+		Thread.sleep(500);
 
 		BrowserUtils.clickWithJSWait(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 2);
-
 
 		BrowserUtils.waitForClickablility(By.xpath("//a[contains(@aria-label,'View grades')]"), 5);
 		BrowserUtils.clickWithTimeOut(By.xpath("//a[contains(@aria-label,'View grades')]"), 5);
