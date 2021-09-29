@@ -81,29 +81,46 @@ public class Zoom_Att_EU6_and_EU7_Together_3 extends BasePage_3 {
 			System.out.println();
 
 
+			//naming the folders
 			for (int i = 0; i < studentNames.size(); i++) {
 				for (int j = 0; j < zoomAttEmails.size(); j++) {
-
 					if (studentEmails.get(i).equals(zoomAttEmails.get(j))) {
-//						System.out.println(studentNames.get(i) + ": " + zoomAttDurations.get(j));
 
-						if (eachGroupZoomSheet.equals(zoomSheetEU7)) {
-							if (i < eu7group1) {
-								System.out.println("EU7 / Group-11: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
-								if (i == eu7group1 - 2) {
+						if (totalEU7groups == 3 && totalEU6groups == 1) {
+							if (eachGroupZoomSheet.equals(zoomSheetEU7)) {
+								if (i < groupNum1) {
+									System.out.println("EU7 / " + groupName1 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								} else if (i >= groupNum1 && i < groupNum1 + groupNum2) {
+									System.out.println("EU7 / " + groupName2 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								} else {
+									System.out.println("EU7 / " + groupName3 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
 								}
-							} else if (i >= eu7group1 && i < eu7group1 + eu7group2) {
-								System.out.println("EU7 / Group-12: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
-								if (i == eu7group1 + eu7group2 - 1) {
-								}
-							} else {
-								System.out.println("EU7 / Group-23: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+
+							} else if (eachGroupZoomSheet.equals(zoomSheetEU6)) {
+								System.out.println("EU6 / " + groupName4 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
 							}
-
-						} else if (eachGroupZoomSheet.equals(zoomSheetEU6)) {
-							System.out.println("EU6 / Group-12: " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+							System.out.println();
 						}
-						System.out.println();
+
+						else if (totalEU7groups == 2 && totalEU6groups == 2) {
+							if (eachGroupZoomSheet.equals(zoomSheetEU7)) {
+								if (i < groupNum1) {
+									System.out.println("EU7 / " + groupName1 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								} else if (i >= groupNum1 && i < groupNum1 + groupNum2) {
+									System.out.println("EU7 / " + groupName2 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								}
+							}else if (eachGroupZoomSheet.equals(zoomSheetEU6)) {
+								if (i < groupNum3) {
+									System.out.println("EU6 / " + groupName3 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								} else if (i >= groupNum3 && i < groupNum3 + groupNum4) {
+									System.out.println("EU6 / " + groupName4 + ": " + studentNames.get(i).toUpperCase() + " --> " + zoomAttDurations.get(j));
+								}
+							}
+							System.out.println();
+						}
+					}
+
+
 					}
 
 				}
@@ -113,7 +130,6 @@ public class Zoom_Att_EU6_and_EU7_Together_3 extends BasePage_3 {
 
 	}
 
-}
 
 
 

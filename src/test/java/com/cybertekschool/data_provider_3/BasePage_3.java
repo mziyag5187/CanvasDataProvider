@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.runner.notification.RunListener;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,6 +24,63 @@ public class BasePage_3 {
 	public BasePage_3() throws IOException {
 	}
 
+	//*****ONLY ADJUST THESE VARIABLES*****
+	//*************************************
+
+	//credentials
+	String username = "yakupck@cybertekschool.com";
+	String password = "Trabzon-61";
+
+
+	//******** GROUP INFO *************************
+	//number of groups you have
+	int totalEU7groups = 3;
+	int totalEU6groups = 1;
+
+
+	//EU7 groups names
+	String groupName1 = "Group-11";
+	String groupName2 = "Group-12";
+	String groupName3 = "Group-23";
+
+
+	//EU6 groups names
+	String groupName4 = "Group-12";
+
+
+	//number of students in your groups
+	int groupNum1 = 14;      //EU7 group1
+	int groupNum2 = 12;      //EU7 group2
+	int groupNum3 = 13;      //EU7 group3
+	int groupNum4 = 12;      //EU6 group1
+
+	//-----------------------------------
+
+//******** GROUP INFO ***************************
+//	//number of groups you have
+//	int totalEU7groups = 2;
+//	int totalEU6groups = 2;
+//
+//	//EU7 groups names
+//	String groupName1 = "Group-11";
+//	String groupName2 = "Group-12";
+//
+//	//EU6 groups names
+//	String groupName3 = "Group-12";
+//	String groupName4 = "Group-23";
+//
+//	//number of students in your groups
+//	int groupNum1 = 14;      //EU7 group1
+//	int groupNum2 = 12;      //EU7 group2
+//
+//	int groupNum3 = 12;      //EU6 group1
+//	int groupNum4 = 14;      //EU6 group2
+
+
+	//*************************************
+	//*************************************
+
+
 	//excel sheet recording row no
 	int URLs_Row_StartsFrom = 0;
 
@@ -37,21 +93,11 @@ public class BasePage_3 {
 	//excel sheet student name column no
 	int studentNameColumnStartsFrom = 2;
 
-
-	//number of students in group1
-	int eu7group1 = 14;
-	int eu7group2 = 12;
-	int eu7group3 = 14;
-	int eu6group1 = 12;
-
-	String username = ConfigurationReader.get("username");
-	String password = ConfigurationReader.get("password");
-
 	String path = "C:\\Users\\yakup\\IdeaProjects\\CanvasDataProvider\\src\\test\\resources\\dersler.xlsx";
 	Workbook workbook = WorkbookFactory.create(new File(path));
 
 
-	//=========================================================
+	//=====================================================================================================
 
 
 	public void commonThings(ArrayList<String> messages, String whichOne, ArrayList<String> excelPagesList, String sheetAdded1, String sheetAdded2, String sheetAdded3, String sheetAdded4) throws InterruptedException {
@@ -146,44 +192,93 @@ public class BasePage_3 {
 							//Creating Folder for screenshots
 							String studentFolderString = "";
 
-							if (whichOne.equals("recordings")) {
 
-								if (excelPagesList.get(k).equals(sheetAdded1)) {
-									if (studentIndexNo < eu7group1) {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-11 Recordings\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
-									} else if (studentIndexNo >= eu7group1 && studentIndexNo < eu7group1 + eu7group2) {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-12 Recordings\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
-									} else {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-23 Recordings\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
-									}
-								} else if (excelPagesList.get(k).equals(sheetAdded2)) {
-									studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12 Recordings\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
-								}
-							} else if (whichOne.equals("quizAssign")) {
+							//CREATE FOLDER FOR SCREENSHOTS BASED ON GROUPS-NAMING RULES
+							if (totalEU7groups == 3 && totalEU6groups == 1) {
 
-								if (excelPagesList.get(k).equals(sheetAdded1)) {
-									if (studentIndexNo < eu7group1) {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-11 Quizzes\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
-									} else if (studentIndexNo >= eu7group1 && studentIndexNo < eu7group1 + eu7group2) {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-12 Quizzes\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
-									} else {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-23 Quizzes\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+								if (whichOne.equals("recordings")) {
+									if (excelPagesList.get(k).equals(sheetAdded1)) {
+										if (studentIndexNo < groupNum1) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName1 + " Recordings\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum1 && studentIndexNo < groupNum1 + groupNum2) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName2 + " Recordings\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
+										} else {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName3 + " Recordings\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded2)) {
+										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName4 + " Recordings\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
 									}
-								} else if (excelPagesList.get(k).equals(sheetAdded3)) {
-									studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12 Quizzes\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
-								} else if (excelPagesList.get(k).equals(sheetAdded2)) {
-									if (studentIndexNo < eu7group1) {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-11 Assignments\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
-									} else if (studentIndexNo >= eu7group1 && studentIndexNo < eu7group1 + eu7group2) {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-12 Assignments\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
-									} else {
-										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\Group-23 Assignments\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+								} else if (whichOne.equals("quizAssign")) {
+									if (excelPagesList.get(k).equals(sheetAdded1)) {
+										if (studentIndexNo < groupNum1) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName1 + " Quizzes\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum1 && studentIndexNo < groupNum1 + groupNum2) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName2 + " Quizzes\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
+										} else {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName3 + " Quizzes\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded3)) {
+										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName4 + " Quizzes\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+									} else if (excelPagesList.get(k).equals(sheetAdded2)) {
+										if (studentIndexNo < groupNum1) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName1 + " Assignments\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum1 && studentIndexNo < groupNum1 + groupNum2) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName2 + " Assignments\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
+										} else {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName3 + " Assignments\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded4)) {
+										studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName4 + " Assignments\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
 									}
-								} else if (excelPagesList.get(k).equals(sheetAdded4)) {
-									studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\Group-12 Assignments\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
 								}
+							} else if (totalEU7groups == 2 && totalEU6groups == 2) {
+
+								if (whichOne.equals("recordings")) {
+									if (excelPagesList.get(k).equals(sheetAdded1)) {
+										if (studentIndexNo < groupNum1) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName1 + " Recordings\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum1 && studentIndexNo < groupNum1 + groupNum2) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName2 + " Recordings\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded2)) {
+										if (studentIndexNo < groupNum3) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName3 + " Recordings\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum3 && studentIndexNo < groupNum3 + groupNum4) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName4 + " Recordings\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									}
+								} else if (whichOne.equals("quizAssign")) {
+									if (excelPagesList.get(k).equals(sheetAdded1)) {
+										if (studentIndexNo < groupNum1) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName1 + " Quizzes\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum1 && studentIndexNo < groupNum1 + groupNum2) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName2 + " Quizzes\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded3)) {
+										if (studentIndexNo < groupNum3) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName3 + " Quizzes\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum3 && studentIndexNo < groupNum3 + groupNum4) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName4 + " Quizzes\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded2)) {
+
+										if (studentIndexNo < groupNum1) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName1 + " Assignments\\" + ++eu7CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum1 && studentIndexNo < groupNum1 + groupNum2) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU7\\" + groupName2 + " Assignments\\" + ++eu7CountGroup2 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									} else if (excelPagesList.get(k).equals(sheetAdded4)) {
+										if (studentIndexNo < groupNum3) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName3 + " Assignments\\" + ++eu7CountGroup3 + " - " + All_Students_List.get(studentIndexNo);
+										} else if (studentIndexNo >= groupNum3 && studentIndexNo < groupNum3 + groupNum4) {
+											studentFolderString = System.getProperty("user.dir") + "\\target\\SCREENSHOTS\\EU6\\" + groupName4 + " Assignments\\" + ++eu6CountGroup1 + " - " + All_Students_List.get(studentIndexNo);
+										}
+									}
+								}
+
 							}
 
+							//To create a file/folder by Java
 							File studentFolderFile = new File(studentFolderString);
 
 							//if folder is already exist, delete it
@@ -191,7 +286,7 @@ public class BasePage_3 {
 								FileUtils.deleteDirectory(studentFolderFile);
 							}
 
-
+							//****************************************\\
 							//going through each student data (0 and 1s)
 							for (int j = 0; j < dataList.size(); j++) {
 
@@ -231,6 +326,9 @@ public class BasePage_3 {
 	}
 
 
+
+
+	//==================================================================================================================================================================================================================================================================================================================
 	public void recordingsPage(WebDriver driver, ArrayList<String> All_Students_List, int studentIndexNo, String studentFolderString, int taskCount) throws InterruptedException, IOException {
 
 
@@ -332,6 +430,7 @@ public class BasePage_3 {
 			}
 		}
 
+		//***************\\
 		//trimRecordingName
 		String recordingName = driver.findElement(By.cssSelector("h1.page-title")).getText();
 		recordingName = recordingName.replace(":", "");
@@ -339,10 +438,19 @@ public class BasePage_3 {
 		recordingName = recordingName.replace("~", "");
 		recordingName = recordingName.replace("!", "");
 		recordingName = recordingName.replace("%", "");
+		recordingName = recordingName.replace("?", "");
+		recordingName = recordingName.replace("*", "");
+		recordingName = recordingName.replace(".", "");
+		recordingName = recordingName.replace("{", "");
+		recordingName = recordingName.replace("}", "");
+		recordingName = recordingName.replace("(", "");
+		recordingName = recordingName.replace(")", "");
 		recordingName = recordingName.replace("RECORDING", "");
 		Thread.sleep(3000);
 
 
+		//*****************************************\\
+		//To take screenshot
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File screenshot = ts.getScreenshotAs(OutputType.FILE);
 		File pngFolder = new File(studentFolderString + "\\" + All_Students_List.get(studentIndexNo) + " " + taskCount + " - " + recordingName + ".png");
@@ -351,6 +459,9 @@ public class BasePage_3 {
 	}
 
 
+
+
+	//==================================================================================================================================================================================================================================================================================================================
 	public void quizAssignPage(int k, ArrayList<String> excelPagesList, WebDriver driver, ArrayList<String> All_Students_List, int studentIndexNo, String studentFolderString, int taskCount, String sheetAdded1, String sheetAdded2, String sheetAdded3, String sheetAdded4) throws InterruptedException, IOException {
 
 		WebElement quizAssignWE = null;
@@ -399,6 +510,12 @@ public class BasePage_3 {
 		searchButton.sendKeys(All_Students_List.get(studentIndexNo));
 		Thread.sleep(500);
 
+		try {
+			BrowserUtils.waitForClickablility(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 7);
+		} catch (Exception e) {
+
+		}
+
 		BrowserUtils.clickWithJSWait(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 2);
 
 		BrowserUtils.waitForClickablility(By.xpath("//a[contains(@aria-label,'View grades')]"), 5);
@@ -433,15 +550,17 @@ public class BasePage_3 {
 	}
 
 
-	//=========================================================================================================
 
+
+
+
+	//=========================================================================================================
 	public void login() throws InterruptedException {
 		driver = Driver.get();
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 		driver.get(ConfigurationReader.get("url"));
 
-		//==================================================================================
 
 		Thread.sleep(1500);
 		if (!driver.getCurrentUrl().equals("https://cybertekschool.okta.com/app/UserHome")) {
@@ -455,13 +574,14 @@ public class BasePage_3 {
 
 	}
 
+	//=========================================================================================================
 	public void goCybertek() throws InterruptedException {
 		WebDriverWait wait = new WebDriverWait(driver, 25);
 		wait.until(ExpectedConditions.urlContains("UserHome"));
 
-		//==================================================================================
+		//================================================
 		//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
-		//==================================================================================
+		//================================================
 
 		try {
 			wait.until(ExpectedConditions.numberOfWindowsToBe(2));
