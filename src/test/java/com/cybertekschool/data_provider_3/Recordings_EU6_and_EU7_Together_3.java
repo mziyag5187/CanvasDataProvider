@@ -15,7 +15,7 @@ public class Recordings_EU6_and_EU7_Together_3 extends BasePage_3 {
 
 
 	@Test
-	public void Canvas() throws InterruptedException, IOException {
+	public void checkRecordings() throws InterruptedException, IOException {
 
 		String sheetAdded1 = "EU7-Recordings";
 		String sheetAdded2 = "EU6-Recordings";
@@ -34,6 +34,7 @@ public class Recordings_EU6_and_EU7_Together_3 extends BasePage_3 {
 		messages.add("--No Missing Recording");
 		messages.add("--Recording being checked: ");
 		messages.add("--number of total missing recordings from the student: ");
+		messages.add("--Recording being checked: null / no insight in the URL to check: ");
 
 		commonThings(messages,"recordings", excelPagesList, sheetAdded1, sheetAdded2, sheetAdded3, sheetAdded4);
 

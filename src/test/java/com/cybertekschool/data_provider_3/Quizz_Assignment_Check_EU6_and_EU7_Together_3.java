@@ -13,7 +13,7 @@ public class Quizz_Assignment_Check_EU6_and_EU7_Together_3 extends BasePage_3 {
 
 
 	@Test
-	public void Canvas() throws InterruptedException, IOException {
+	public void quizAssignmentCheck() throws InterruptedException, IOException {
 
 		String sheetAdded1 = "EU7-Quizzes";
 		String sheetAdded2 = "EU7-Assignments";
@@ -33,6 +33,8 @@ public class Quizz_Assignment_Check_EU6_and_EU7_Together_3 extends BasePage_3 {
 		messages.add("--No Missing Quiz/Assign");
 		messages.add("--Quiz/assign. being checked: ");
 		messages.add("--number of total missing quiz/assignment from the student: ");
+		messages.add("--Quiz/assign. being checked: null / no URL to check: ");
+
 
 		commonThings(messages,"quizAssign", excelPagesList, sheetAdded1, sheetAdded2, sheetAdded3, sheetAdded4);
 

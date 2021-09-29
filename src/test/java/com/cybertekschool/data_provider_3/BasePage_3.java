@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.junit.runner.notification.RunListener;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -53,7 +54,7 @@ public class BasePage_3 {
 	//=========================================================
 
 
-	public void commonThings(ArrayList<String> messages, String whichOne, ArrayList<String> excelPagesList, String sheetAdded1, String sheetAdded2, String sheetAdded3, String sheetAdded4) {
+	public void commonThings(ArrayList<String> messages, String whichOne, ArrayList<String> excelPagesList, String sheetAdded1, String sheetAdded2, String sheetAdded3, String sheetAdded4) throws InterruptedException {
 
 		login();
 
@@ -69,6 +70,7 @@ public class BasePage_3 {
 
 				//get last column number
 				int lastColNumInSheet = currentExcelPage.getRow(URLs_Row_StartsFrom).getLastCellNum();
+				System.out.println("\n****************************************************************");
 				System.out.println("Last column number in current sheet: " + lastColNumInSheet + "\n");
 
 
@@ -211,6 +213,10 @@ public class BasePage_3 {
 										quizAssignPage(k, excelPagesList, driver, All_Students_List, studentIndexNo, studentFolderString, taskCount, sheetAdded1, sheetAdded2, sheetAdded3, sheetAdded4);
 									}
 
+
+								} else if (dataList.get(j) == 0 && allURLsList.get(j).equals("null")) {
+									//!!!!!!!CHANGE TO STRING VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+									System.out.println(messages.get(5));
 
 								}
 							}
@@ -429,7 +435,7 @@ public class BasePage_3 {
 
 	//=========================================================================================================
 
-	public void login() {
+	public void login() throws InterruptedException {
 		driver = Driver.get();
 		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
@@ -437,16 +443,19 @@ public class BasePage_3 {
 
 		//==================================================================================
 
-		driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
-		driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
-		driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
-		BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
+		Thread.sleep(1500);
+		if (!driver.getCurrentUrl().equals("https://cybertekschool.okta.com/app/UserHome")) {
 
+			driver.findElement(By.xpath("//*[@id=\"okta-signin-username\"]")).sendKeys(username);
+			driver.findElement(By.xpath("//*[@id=\"okta-signin-password\"]")).sendKeys(password);
+			driver.findElement(By.xpath("//*[@id=\"okta-signin-submit\"]")).click();
+			BrowserUtils.clickWithJSWait(By.xpath("//*[@id=\"form8\"]/div[2]/input"), 5);
+		}
 		goCybertek();
 
 	}
 
-	public void goCybertek() {
+	public void goCybertek() throws InterruptedException {
 		WebDriverWait wait = new WebDriverWait(driver, 25);
 		wait.until(ExpectedConditions.urlContains("UserHome"));
 
@@ -454,12 +463,16 @@ public class BasePage_3 {
 		//** OPEN YOUR MOBILE PHONE AND APPROVE OKTA LOGIN
 		//==================================================================================
 
-		wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+		try {
+			wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+			ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+			driver.switchTo().window(tabs2.get(1));
+			driver.close();
+			driver.switchTo().window(tabs2.get(0));
+		} catch (Exception e) {
+			Thread.sleep(100);
+		}
 
-		ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
-		driver.switchTo().window(tabs2.get(1));
-		driver.close();
-		driver.switchTo().window(tabs2.get(0));
 		driver.get("https://learn.cybertekschool.com/courses/540");
 	}
 

@@ -20,7 +20,7 @@ public class Zoom_Att_EU6_and_EU7_Together_3 extends BasePage_3 {
 
 
 	@Test
-	public void Canvas() throws InterruptedException, IOException {
+	public void checkZoomAttendance() throws InterruptedException, IOException {
 
 
 		ArrayList<String> allGroupsZoomSheet = new ArrayList<>();
