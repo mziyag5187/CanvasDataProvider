@@ -1,4 +1,4 @@
-package com.cybertekschool.data_provider_3;
+package com.cybertekschool.data_provider;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.Test;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class Zoom_Att_EU6_and_EU7_Together_3 extends BasePage_3 {
+public class Zoom_Attendances_Check extends BasePage {
 
 	String zoomSheetEU7 = "Zoom-EU7";
 	String zoomSheetEU6 = "Zoom-EU6";
@@ -15,7 +15,7 @@ public class Zoom_Att_EU6_and_EU7_Together_3 extends BasePage_3 {
 	String mailSheetEU7 = "Zoom-EU7-EmailList";
 	String mailSheetEU6 = "Zoom-EU6-EmailList";
 
-	public Zoom_Att_EU6_and_EU7_Together_3() throws IOException {
+	public Zoom_Attendances_Check() throws IOException {
 	}
 
 

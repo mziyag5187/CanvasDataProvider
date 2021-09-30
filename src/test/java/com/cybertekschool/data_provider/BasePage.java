@@ -1,4 +1,4 @@
-package com.cybertekschool.data_provider_3;
+package com.cybertekschool.data_provider;
 
 import com.cybertekschool.utilities.BrowserUtils;
 import com.cybertekschool.utilities.ConfigurationReader;
@@ -17,19 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class BasePage_3 {
+public class BasePage {
 
 	WebDriver driver;
 
-	public BasePage_3() throws IOException {
+	public BasePage() throws IOException {
 	}
 
 	//*****ONLY ADJUST THESE VARIABLES*****
 	//*************************************
 
 	//credentials
-	String username = "yakupck@cybertekschool.com";
-	String password = "Trabzon-61";
+	String username = "*******@cybertekschool.com";
+	String password = "******";
 
 
 	//******** GROUP INFO *************************

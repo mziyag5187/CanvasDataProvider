@@ -1,15 +1,14 @@
-package com.cybertekschool.data_provider_3;
+package com.cybertekschool.data_provider;
 
 
-import io.cucumber.java.bs.A;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Quizz_Assignment_Check_EU6_and_EU7_Together_3 extends BasePage_3 {
+public class Quizz_Assignment_Check extends BasePage {
 
-	public Quizz_Assignment_Check_EU6_and_EU7_Together_3() throws IOException {
+	public Quizz_Assignment_Check() throws IOException {
 	}
 
 

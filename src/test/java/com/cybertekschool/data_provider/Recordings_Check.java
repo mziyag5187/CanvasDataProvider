@@ -7,15 +7,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class Recordings_EU6_and_EU7_Together_2 extends BasePage_2 {
+public class Recordings_Check extends BasePage {
 
 
-	public Recordings_EU6_and_EU7_Together_2() throws IOException {
+	public Recordings_Check() throws IOException {
 	}
 
 
 	@Test
-	public void Canvas() throws InterruptedException, IOException {
+	public void checkRecordings() throws InterruptedException, IOException {
 
 		String sheetAdded1 = "EU7-Recordings";
 		String sheetAdded2 = "EU6-Recordings";
@@ -33,6 +33,8 @@ public class Recordings_EU6_and_EU7_Together_2 extends BasePage_2 {
 		messages.add("Number of Total Recordings: ");
 		messages.add("--No Missing Recording");
 		messages.add("--Recording being checked: ");
+		messages.add("--number of total missing recordings from the student: ");
+		messages.add("--Recording being checked: null / no insight in the URL to check: ");
 
 		commonThings(messages,"recordings", excelPagesList, sheetAdded1, sheetAdded2, sheetAdded3, sheetAdded4);
 
