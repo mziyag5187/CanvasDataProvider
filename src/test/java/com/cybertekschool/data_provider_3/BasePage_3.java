@@ -326,8 +326,6 @@ public class BasePage_3 {
 	}
 
 
-
-
 	//==================================================================================================================================================================================================================================================================================================================
 	public void recordingsPage(WebDriver driver, ArrayList<String> All_Students_List, int studentIndexNo, String studentFolderString, int taskCount) throws InterruptedException, IOException {
 
@@ -459,8 +457,6 @@ public class BasePage_3 {
 	}
 
 
-
-
 	//==================================================================================================================================================================================================================================================================================================================
 	public void quizAssignPage(int k, ArrayList<String> excelPagesList, WebDriver driver, ArrayList<String> All_Students_List, int studentIndexNo, String studentFolderString, int taskCount, String sheetAdded1, String sheetAdded2, String sheetAdded3, String sheetAdded4) throws InterruptedException, IOException {
 
@@ -497,24 +493,41 @@ public class BasePage_3 {
 		BrowserUtils.clickWithJSWait(By.xpath("//a[@class='people']"), 3);
 
 		WebElement searchButton = null;
-		placeHolder:
-		for (int i = 0; i < 3; i++) {
+
+		sendkeys:
+		for (int i = 0; i < 2; i++) {
 			try {
-				searchButton = driver.findElement(By.xpath("//*[@placeholder='Search people']"));
-				break placeHolder;
+				searchButton:
+				for (int j = 0; j < 3; j++) {
+					try {
+						searchButton = driver.findElement(By.xpath("//*[@placeholder='Search people']"));
+						break searchButton;
+					} catch (Exception e) {
+
+					}
+				}
+
+				searchButton.sendKeys(All_Students_List.get(studentIndexNo));
+				Thread.sleep(500);
+				BrowserUtils.waitForClickablility(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 5);
+				break sendkeys;
 			} catch (Exception e) {
-				Thread.sleep(1000);
+				driver.navigate().refresh();
+				Thread.sleep(1500);
 			}
 		}
 
-		searchButton.sendKeys(All_Students_List.get(studentIndexNo));
-		Thread.sleep(500);
 
-		try {
-			BrowserUtils.waitForClickablility(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 7);
-		} catch (Exception e) {
+//		placeHolder:
+//		for (int i = 0; i < 3; i++) {
+//			try {
+//				searchButton = driver.findElement(By.xpath("//*[@placeholder='Search people']"));
+//				break placeHolder;
+//			} catch (Exception e) {
+//				Thread.sleep(1000);
+//			}
+//		}
 
-		}
 
 		BrowserUtils.clickWithJSWait(By.xpath("//a[contains(text(),'" + All_Students_List.get(studentIndexNo) + "')]"), 2);
 
@@ -548,10 +561,6 @@ public class BasePage_3 {
 		File pngFolder = new File(studentFolderString + "\\" + All_Students_List.get(studentIndexNo) + " " + taskCount + ".png");
 		FileUtils.copyFile(screenshot, pngFolder);
 	}
-
-
-
-
 
 
 	//=========================================================================================================
